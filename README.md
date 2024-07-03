@@ -68,4 +68,68 @@ Observability is key. Save every request and response made to the APIs to a **pr
 ---
 
 ## How to run
-Please fill this section as part of the assignment.
+![Iguana](images/iguana.png)
+
+### Repository Structure
+
+- **Notebooks Folder**: Contains the `Solutions.ipynb` which includes solutions for challenges 1 and 2. 
+- **Root Folder**: Contains `api.py` which is the FastAPI application for challenge 3 and 4.
+
+### Version Tags
+The repository is tagged at various points to reflect the completion of different challenges:
+- **challenge_1**: Challenge 1 completed.
+- **challenge_2**: Challenge 2 completed.
+- **challenge_3**: Challenge 3 completed.
+- **challenge_4**: Challenge 4 completed.
+
+You can download specific versions of the project corresponding to each challenge's completion using these tags.
+
+### Setup Instructions
+
+1. **Clone the Repository**
+   - Clone the repository to your local machine or download the source code for a specific tag if needed.
+   ```bash
+   git clone git@github.com:LucaBia/xtream-ai-assignment-developer.git
+   cd xtream-ai-assignment-developer
+   ```
+
+2. **Create and Activate a Virtual Environment**
+   - Recommended to manage dependencies without affecting global Python setup.
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+3. **Install Dependencies**
+   - Install required Python packages.
+   ```bash
+   pip3 install -r requirements.txt
+   ```
+
+4. **Environment Setup**
+   - Ensure MongoDB is running for logging API requests (Installation instructions are available on the [MongoDB Official Site](https://www.mongodb.com/try/download/community)).
+
+5. **Run the API Server**
+   - Start the FastAPI application:
+   ```bash
+   python3 api.py
+   ```
+
+### API Endpoints
+
+Access the API documentation by visiting `[http://localhost:8000/docs](http://localhost:8000/docs)` in your web browser, where you can test the endpoints directly.
+
+1. **Predict Price (`/predict/`)**: POST method to predict the price based on diamond features.
+2. **Fetch Similar Samples (`/fetch_samples/`)**: POST method to retrieve similar diamonds based on specified criteria.
+3. **Root Endpoint (`/`)**: GET method for a simple response to ensure API is operational.
+
+### Observability
+
+All requests to the API and their responses are logged into a MongoDB database to facilitate observability and debugging.
+![API logs](images/mongologs.png)
+
+### Additional Information
+
+- **Data Preparation**: The machine learning model is trained with preprocessed data as described in the Jupyter notebook (`Solutions.ipynb`).
+- **Model Location**: The trained XGBoost model is stored in `./notebooks/models/XGBoost/03-07-2024-00-53-12/model.joblib`. Ensure this path is accurate or updated as needed.
+
