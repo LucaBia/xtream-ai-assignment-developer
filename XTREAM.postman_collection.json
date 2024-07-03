@@ -1,0 +1,96 @@
+{
+	"info": {
+		"_postman_id": "2fecaed4-edff-44bb-9762-0b3dc10a6140",
+		"name": "XTREAM",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4393491"
+	},
+	"item": [
+		{
+			"name": "Predict Price",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"carat\": 0.8,\n  \"cut\": \"Ideal\",\n  \"color\": \"E\",\n  \"clarity\": \"SI2\",\n  \"depth\": 62.3,\n  \"table\": 57,\n  \"x\": 5.75,\n  \"y\": 5.71,\n  \"z\": 3.58\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/predict/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"predict",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Samples",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"cut\": \"Ideal\",\n  \"color\": \"E\",\n  \"clarity\": \"SI2\",\n  \"carat\": 0.8,\n  \"n_samples\": 3\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/fetch_samples/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"fetch_samples",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://127.0.0.1:8000/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
