@@ -1,10 +1,14 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
+from motor.motor_asyncio import AsyncIOMotorClient
+from starlette.responses import Response
+from fastapi.responses import JSONResponse
 import pandas as pd
 import numpy as np
 import joblib
 import uvicorn
 import asyncio
+import json
 
 
 app = FastAPI(title="Xtream Diamond Price Prediction API")
@@ -27,6 +31,17 @@ class SampleRequest(BaseModel):
     carat: float
     n_samples: int = 5
 
+class LogEntry(BaseModel):
+    url: str
+    method: str
+    request_body: dict
+    response_body: dict
+    status_code: int
+
+MONGO_DETAILS = "mongodb://localhost:27017"
+client = AsyncIOMotorClient(MONGO_DETAILS)
+db = client.logs
+collection = db.api_logs
 
 try:
     data_url = "https://raw.githubusercontent.com/xtreamsrl/xtream-ai-assignment-engineer/main/datasets/diamonds/diamonds.csv"
@@ -65,11 +80,42 @@ def prepare_features(diamond: Diamond):
 
     return df
 
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    request_body = {}
+    try:
+        request_body = await request.json()
+    except Exception as e:
+        request_body = {"error": str(e)}
+
+    response = await call_next(request)
+
+    response_body = b""
+    async for chunk in response.body_iterator:
+        response_body += chunk
+    try:
+        response_body_json = json.loads(response_body.decode())
+    except json.JSONDecodeError:
+        response_body_json = {"error": "Failed to decode JSON"}
+
+    log_entry = {
+        "url": str(request.url),
+        "method": request.method,
+        "request_body": request_body,
+        "response_body": response_body_json,
+        "status_code": response.status_code
+    }
+    await collection.insert_one(log_entry)
+
+    return Response(content=response_body, status_code=response.status_code, media_type="application/json")
+
 @app.post("/predict/")
 async def predict_price(diamond: Diamond):
     features = prepare_features(diamond)
     prediction = model.predict(features)
     prediction = prediction[0].item()
+    
     return {"predicted_price": prediction}
 
 @app.post("/fetch_samples/")
