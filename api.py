@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import joblib
 import uvicorn
+import asyncio
 
 
 app = FastAPI(title="Xtream Diamond Price Prediction API")
@@ -95,5 +96,17 @@ async def shutdown_event():
 app.add_event_handler("startup", startup_event)
 app.add_event_handler("shutdown", shutdown_event)
 
+
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    config = uvicorn.Config(app, host="0.0.0.0", port=8000)
+    server = uvicorn.Server(config)
+    
+    loop = asyncio.get_event_loop()
+    
+    try:
+        loop.run_until_complete(server.serve())
+    except KeyboardInterrupt:
+        pass
+    finally:
+        loop.run_until_complete(loop.shutdown_asyncgens())
+        loop.close()
