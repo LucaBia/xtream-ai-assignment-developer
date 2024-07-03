@@ -3,6 +3,8 @@ from pydantic import BaseModel
 import pandas as pd
 import numpy as np
 import joblib
+import uvicorn
+
 
 app = FastAPI(title="Xtream Diamond Price Prediction API")
 
@@ -80,7 +82,18 @@ async def fetch_samples(request: SampleRequest):
 
     return result.to_dict(orient='records')
 
+@app.get("/")
+async def read_root():
+    return {"message": "Ciao Xtreamer 🚀"}
+
+async def startup_event():
+    print("Starting server ⭐️")
+
+async def shutdown_event():
+    print("Arriverderci Xtreamer☕️")
+
+app.add_event_handler("startup", startup_event)
+app.add_event_handler("shutdown", shutdown_event)
 
 if __name__ == "__main__":
-    import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
