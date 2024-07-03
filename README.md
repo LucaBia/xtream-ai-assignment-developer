@@ -117,10 +117,40 @@ You can download specific versions of the project corresponding to each challeng
 
 ### API Endpoints
 
-Access the API documentation by visiting `[http://localhost:8000/docs](http://localhost:8000/docs)` in your web browser, where you can test the endpoints directly.
+Access the API documentation by visiting `[http://localhost:8000/docs](http://localhost:8000/docs)` in your web browser, where you can test the endpoints directly. You can also import the postman collection available on the root folder `XTREAM.postman_collection.json` or do it directly on your bash.
 
 1. **Predict Price (`/predict/`)**: POST method to predict the price based on diamond features.
+    ```bash 
+    curl -X 'POST' \
+    'http://127.0.0.1:8000/predict/' \
+    -H 'accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "carat": 0.8,
+        "cut": "Ideal",
+        "color": "E",
+        "clarity": "SI2",
+        "depth": 62.3,
+        "table": 57,
+        "x": 5.75,
+        "y": 5.71,
+        "z": 3.58
+    }'
+    ```
 2. **Fetch Similar Samples (`/fetch_samples/`)**: POST method to retrieve similar diamonds based on specified criteria.
+    ```bash 
+    curl -X 'POST' \
+    'http://127.0.0.1:8000/generate_samples/' \
+    -H 'accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "cut": "Ideal",
+        "color": "E",
+        "clarity": "SI2",
+        "carat": 0.8,
+        "n_samples": 3
+    }'
+    ```
 3. **Root Endpoint (`/`)**: GET method for a simple response to ensure API is operational.
 
 ### Observability
