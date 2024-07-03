@@ -17,6 +17,21 @@ class Diamond(BaseModel):
     y: float = 0.0
     z: float = 0.0
 
+class SampleRequest(BaseModel):
+    cut: str
+    color: str
+    clarity: str
+    carat: float
+    n_samples: int = 5
+
+
+try:
+    data_url = "https://raw.githubusercontent.com/xtreamsrl/xtream-ai-assignment-engineer/main/datasets/diamonds/diamonds.csv"
+    data = pd.read_csv(data_url)
+    data = data[(data.x * data.y * data.z != 0) & (data.price > 0)]
+except FileNotFoundError:
+    raise HTTPException(status_code=500, detail="Dataset file not found")
+
 try:
     model = joblib.load("./notebooks/models/XGBoost/03-07-2024-00-53-12/model.joblib")
 except FileNotFoundError:
@@ -53,6 +68,18 @@ async def predict_price(diamond: Diamond):
     prediction = model.predict(features)
     prediction = prediction[0].item()
     return {"predicted_price": prediction}
+
+@app.post("/fetch_samples/")
+async def fetch_samples(request: SampleRequest):
+    similar_diamonds = data[(data['cut'] == request.cut) & (data['color'] == request.color) & (data['clarity'] == request.clarity)]
+    
+    similar_diamonds['carat_diff'] = np.abs(similar_diamonds['carat'] - request.carat)
+    closest_diamonds = similar_diamonds.nsmallest(request.n_samples, 'carat_diff')
+    
+    result = closest_diamonds[['carat', 'cut', 'color', 'clarity', 'depth', 'table', 'x', 'y', 'z', 'price']]
+
+    return result.to_dict(orient='records')
+
 
 if __name__ == "__main__":
     import uvicorn
